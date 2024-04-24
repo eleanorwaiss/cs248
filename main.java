@@ -26,14 +26,14 @@ public class main extends JFrame implements ActionListener{
 	}
 	
 
-	private final int xLimit = 600;
-	private final int yLimit = 600;
-	private final int nodeSize = 80;
-	private final int temp = nodeSize/2;
-	private final int [] xtemp = {xLimit/10,3*xLimit/10, xLimit/2, 7*xLimit/10, 9*xLimit/10};
-	private final int [] ytemp = {yLimit/5, yLimit/2, 4*yLimit/5};
-	private Color p1 = Color.red;
-	private Color p2 = Color.pink;
+	private final int xLimit = 600; //width of game board
+	private final int yLimit = 600; //height of game board, does not include bottom menu
+	private final int nodeSize = 80; //diameter of each node
+	private final int temp = nodeSize/2; //radius of each node
+	private final int [] xtemp = {xLimit/10,3*xLimit/10, xLimit/2, 7*xLimit/10, 9*xLimit/10}; //array for centers of each node, by x position
+	private final int [] ytemp = {yLimit/5, yLimit/2, 4*yLimit/5}; //array for centers of each node, by y position
+	private Color p1 = Color.red; // player 1 color
+	private Color p2 = Color.pink; // player 2 color
 	
 	public final int [][] nodePos = { //the centers of each node
 		{xtemp[0],ytemp[0]}, //node 1
@@ -52,7 +52,11 @@ public class main extends JFrame implements ActionListener{
 		private int xPos, yPos;
 		private int size = nodeSize;
 		private Color color;
-		private int status = 0;
+		private int status = 0; 
+			/* 0: null
+			 * 1: player 1
+			 * 2: player 2
+			 **/
 
 		public node(int x, int y, int size, Color color)
 		{
@@ -60,20 +64,23 @@ public class main extends JFrame implements ActionListener{
 		}
 
 		public void setStatus(int n) {this.status = n;}
-		//public void swim(){}; //I think we can delete this line? not sure
 		
 
 		public void setColor(Color newcolor) { color=newcolor; }
 
-		public void draw(Graphics g)
-		{
-			g.setColor(color);
-			g.fillOval( xPos, yPos, size, size );
-			if(status==0){
+		public void draw(Graphics g){
+			if(status==0){ //if node is unclaimed
+				g.setColor(Color.black);
+				g.fillOval( xPos, yPos, size, size );
 				g.setColor(Color.white);
 				g.fillOval( xPos+10, yPos+10, size-20, size-20); 
+			} else if(status==1){ //player 1
+				g.setColor(p1);
+				g.fillOval( xPos, yPos, size, size );
+			} else{ //player 2
+				g.setColor(p2);
+				g.fillOval( xPos, yPos, size, size );
 			}
-
 		}
 	}
 
@@ -90,14 +97,6 @@ public class main extends JFrame implements ActionListener{
 			for(int i=0; i<board.length; i++) board[i]=new node(nodePos[i][0]-temp, nodePos[i][1]-temp, nodeSize, Color.black);
 		}
 
-		/*
-		public void move()
-		{
-			for(int i=0; i<board.length; i++)
-				board[i].swim();
-		}
-		**/
-
 		public void changeColor(int n)
 		{
 			board[n].setColor(p1);
@@ -105,9 +104,12 @@ public class main extends JFrame implements ActionListener{
 
 		public void paintComponent(Graphics g)
 		{
-			g.setColor(Color.blue);
+			//board background
+			g.setColor(Color.blue); 
 			g.fillRect(0,0, xLimit,yLimit);
-			g.setColor(Color.black);
+
+			//lines connecting nodes
+			g.setColor(Color.black); 
 			g.drawLine(xtemp[0],ytemp[0], xtemp[4],ytemp[0]);
 			g.drawLine(xtemp[1],ytemp[1], xtemp[3],ytemp[1]); 
 			g.drawLine(xtemp[0],ytemp[2], xtemp[4],ytemp[2]); 
@@ -118,7 +120,7 @@ public class main extends JFrame implements ActionListener{
 			g.drawLine(xtemp[2],ytemp[2], xtemp[4],ytemp[0]); 
 			g.drawLine(xtemp[2],ytemp[0], xtemp[4],ytemp[2]); 
 			
-
+			// nodes themselves
 			for(int i=0; i<board.length; i++)
 				board[i].draw(g);
 
@@ -133,9 +135,11 @@ public class main extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e)
 	{
 		// which button was pressed?
-		if(e.getSource()==reset) {}
-			//atlantic.reset();
-		else // update gameboard
+		if(e.getSource()==reset) {
+			for(int i=0; i<9; i++){
+				board[i].status=0;
+			}
+		} else // update gameboard
 		{
 			int n = Integer.parseInt(nodeNum.getText())-1;
 			board[n].setStatus(1);
