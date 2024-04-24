@@ -35,22 +35,22 @@ public class main extends JFrame implements ActionListener{
 	private Color p1 = Color.red;
 	private Color p2 = Color.pink;
 	
-	public final int [][] nodePos = {
-		{xtemp[0],ytemp[0]},
-		{xtemp[2],ytemp[0]},
-		{xtemp[4],ytemp[0]},
-		{xtemp[1],ytemp[1]},
-		{xtemp[2],ytemp[1]},
-		{xtemp[3],ytemp[1]},
-		{xtemp[0],ytemp[2]},
-		{xtemp[2],ytemp[2]},
-		{xtemp[4],ytemp[2]}
+	public final int [][] nodePos = { //the centers of each node
+		{xtemp[0],ytemp[0]}, //node 1
+		{xtemp[2],ytemp[0]}, //node 2
+		{xtemp[4],ytemp[0]}, //node 3
+		{xtemp[1],ytemp[1]}, //node 4
+		{xtemp[2],ytemp[1]}, //node 5
+		{xtemp[3],ytemp[1]}, //node 6
+		{xtemp[0],ytemp[2]}, //node 7
+		{xtemp[2],ytemp[2]}, //node 8
+		{xtemp[4],ytemp[2]} //node 9
 	};
 
 	class node
 	{
 		private int xPos, yPos;
-		private int size;
+		private int size = nodeSize;
 		private Color color;
 		private int status = 0;
 
@@ -60,7 +60,7 @@ public class main extends JFrame implements ActionListener{
 		}
 
 		public void setStatus(int n) {this.status = n;}
-		public void swim(){};
+		//public void swim(){}; //I think we can delete this line? not sure
 		
 
 		public void setColor(Color newcolor) { color=newcolor; }
