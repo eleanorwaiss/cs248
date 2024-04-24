@@ -142,8 +142,12 @@ public class main extends JFrame implements ActionListener{
 		} else // update gameboard
 		{
 			int n = Integer.parseInt(nodeNum.getText())-1;
-			board[n].setStatus(1);
-			atlantic.changeColor(n); //less one as game board visually is 1-9, game itself 0-8
+			if((n<9)&&(n>-1)){
+				board[n].setStatus(1);
+				atlantic.changeColor(n); //less one as game board visually is 1-9, game itself 0-8
+			} else {
+				//error handling for input out of bounds
+			}
 		}
 		repaint();
 	}
