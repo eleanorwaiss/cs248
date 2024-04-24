@@ -5,18 +5,17 @@ import java.awt.event.*;
 import java.awt.*;
 import java.awt.geom.Line2D;
 
-class Dad extends WindowAdapter
-{
+class Dad extends WindowAdapter{
 	public void windowClosing(WindowEvent e)
 	{
-		System.out.println("Dad likes pancakes.");
+		System.out.println("Program terminated.");
 		System.exit(0); // quits the program
 	}
 }
 
 public class main extends JFrame implements ActionListener{
 
-	public static Color randomcolor()
+	public static Color randomcolor() //can we delete this function? Obsolete
 	{
 		return new Color( 
 			(int)(256*Math.random()),
@@ -74,10 +73,10 @@ public class main extends JFrame implements ActionListener{
 				g.fillOval( xPos, yPos, size, size );
 				g.setColor(Color.white);
 				g.fillOval( xPos+10, yPos+10, size-20, size-20); 
-			} else if(status==1){ //player 1
+			} else if(status==1){ //else if player 1 claimed
 				g.setColor(p1);
 				g.fillOval( xPos, yPos, size, size );
-			} else{ //player 2
+			} else{ //else player 2 claimed
 				g.setColor(p2);
 				g.fillOval( xPos, yPos, size, size );
 			}
@@ -143,8 +142,12 @@ public class main extends JFrame implements ActionListener{
 		{
 			int n = Integer.parseInt(nodeNum.getText())-1;
 			if((n<9)&&(n>-1)){
-				board[n].setStatus(1);
-				atlantic.changeColor(n); //less one as game board visually is 1-9, game itself 0-8
+				if(board[n].status==0){
+					board[n].setStatus(1);
+					atlantic.changeColor(n); //less one as game board visually is 1-9, game itself 0-8
+				} else{
+					System.out.println("Invalid Action: node already claimed.");
+				}
 			} else {
 				//error handling for input out of bounds
 			}
@@ -189,6 +192,3 @@ public class main extends JFrame implements ActionListener{
 		main syrup=new main();
 	}
 }
-
-
-
