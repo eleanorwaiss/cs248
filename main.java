@@ -17,6 +17,7 @@ class Dad extends WindowAdapter{
 public class main extends JFrame implements ActionListener{
 	protected final boolean DEBUG = true; //flag for debug mode, to send addl messages to the terminal
 	protected int gameStatus = 0; //effectively a three-valued boolean to mark if (0) GAME_OPEN, (1)P1_WIN, (-1) P2_WIN
+	protected int gameMode = 0; //0: player goes first 1: AI goes first
 
 	private final int xLimit = 600; //width of game board
 	private final int yLimit = 600; //height of game board, does not include bottom menu
@@ -139,17 +140,29 @@ public class main extends JFrame implements ActionListener{
 
 	Ocean atlantic;
 
-	JButton reset, enter;
+	JButton reseta, resetp, enter;
 	JTextField nodeNum;
 
 	public void actionPerformed(ActionEvent e){
 		// which button was pressed?
-		if(e.getSource()==reset) {
+		if(e.getSource()==reseta||e.getSource()==resetp) {
 			gameStatus = 0;
 			for(int i=0; i<9; i++){
 				board[i].status=0;
 			}
 			p1Score = p2Score = 1;
+			if(e.getSource()==resetp){
+				gameMode=0; 
+				if(DEBUG) System.out.println("Reset, player first");
+			} else {
+				gameMode=1; 
+				if(DEBUG) System.out.println("Reset, AI first");
+				int r;
+				do{
+					r = (int)(Math.random()*9);
+				} while(board[r].status!=0);
+				board[r].setStatus(2);
+			}
 		} else // update gameboard
 		{
 			int n = Integer.parseInt(nodeNum.getText())-1; //read in node to update from text field
@@ -190,8 +203,10 @@ public class main extends JFrame implements ActionListener{
 		Container glass=getContentPane();
 		glass.setLayout( new BorderLayout() );
 
-		reset=new JButton("Reset");
-		reset.addActionListener(this);
+		reseta=new JButton("Reset: AI goes first");
+		reseta.addActionListener(this);
+		resetp=new JButton("Reset: Player goes first");
+		resetp.addActionListener(this);
 		enter=new JButton("Enter");
 		enter.addActionListener(this);
 		nodeNum=new JTextField("0");
@@ -201,6 +216,9 @@ public class main extends JFrame implements ActionListener{
 
 		JPanel bottom=new JPanel();
 		bottom.setLayout(new BorderLayout());
+		JPanel reset = new JPanel();
+		reset.add(resetp, "West");
+		reset.add(reseta, "East");
 
 		bottom.add(reset,"West");
 		bottom.add(nodeNum,"Center");
