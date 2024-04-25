@@ -207,6 +207,9 @@ public class main extends JFrame implements ActionListener{
 					checkOver();
 
 					if(gameStatus==0){ //if game still active
+						//if adding AI, this is where the selection algo goes
+
+						//board[i].status gives the status of each node
 						//AI make rand move
 						int r;
 						do{
