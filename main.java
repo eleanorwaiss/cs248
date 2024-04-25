@@ -25,7 +25,7 @@ public class main extends JFrame implements ActionListener{
 
 	private final int xLimit = 600; //width of game board
 	private final int yLimit = 600; //height of game board, does not include bottom menu
-	private final int nodeSize = 80; //diameter of each node
+	private final int nodeSize = 70; //diameter of each node
 	private final int temp = nodeSize/2; //radius of each node
 
 	private final int [] xtemp = {xLimit/10,3*xLimit/10, xLimit/2, 7*xLimit/10, 9*xLimit/10}; //array for centers of each node, by x position
@@ -231,7 +231,7 @@ public class main extends JFrame implements ActionListener{
 	public main(){
 		setTitle("Jerry-Tac-Toe");
 		addWindowListener( new Dad() );
-		setSize(xLimit,yLimit+50);
+		setSize(xLimit+10,yLimit+70);
 
 		Container glass=getContentPane();
 		glass.setLayout( new BorderLayout() );
@@ -245,6 +245,9 @@ public class main extends JFrame implements ActionListener{
 		nodeNum=new JTextField("0");
 		nodeNum.setFont(new Font("Arial", Font.PLAIN, 24));
 
+		JLabel playerCode = new JLabel("Player is blue.  Computer is red.");
+		playerCode.setFont(new Font("Arial", Font.PLAIN, 24));
+
 		atlantic=new Ocean();
 
 		JPanel bottom=new JPanel();
@@ -257,6 +260,7 @@ public class main extends JFrame implements ActionListener{
 		bottom.add(nodeNum,"Center");
 		bottom.add(enter,"East");
 
+		glass.add(playerCode, "North");
 		glass.add(atlantic,"Center");
 		glass.add(bottom,"South");
 
