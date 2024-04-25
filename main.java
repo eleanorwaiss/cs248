@@ -3,7 +3,6 @@ import java.util.*;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
-import java.awt.geom.Line2D;
 
 class Dad extends WindowAdapter{
 	public void windowClosing(WindowEvent e)
@@ -16,7 +15,12 @@ class Dad extends WindowAdapter{
 
 public class main extends JFrame implements ActionListener{
 	protected final boolean DEBUG = true; //flag for debug mode, to send addl messages to the terminal
-	protected int gameStatus = 0; //effectively a three-valued boolean to mark if (0) GAME_OPEN, (1)P1_WIN, (-1) P2_WIN
+	protected int gameStatus = 0;
+	/* 0: game active
+	 * 1: player 1 wins
+	 * 2: player 2 wins
+	 * -1: tie
+	 **/
 	protected int gameMode = 0; //0: player goes first 1: AI goes first
 
 	private final int xLimit = 600; //width of game board
@@ -39,6 +43,7 @@ public class main extends JFrame implements ActionListener{
 		* If yes, they must have all three of the primes that factor into the score, a.k.a. they have all three nodes.
 		* I'm really happy that I thought of this, it is super efficient and uses some nice elementary number theory!
 		**/
+	public final int MAX_SCORE = 223092870; //product of all primes used, highest possible score
 		
 	
 	public final int [][] nodePos = { //the centers of each node
@@ -74,8 +79,10 @@ public class main extends JFrame implements ActionListener{
 			this.status = n;
 			if(n==1){
 				p1Score = p1Score*this.prime;
+				if(DEBUG) System.out.println("P1: "+p1Score);
 			}else{
 				p2Score = p2Score*this.prime;
+				if(DEBUG) System.out.println("P2: "+p2Score);
 			}
 		}
 		
@@ -143,48 +150,71 @@ public class main extends JFrame implements ActionListener{
 	JButton reseta, resetp, enter;
 	JTextField nodeNum;
 
+	public void checkOver(){
+		for(int i=0; i<WINNING_KEY.length; i++){ //check if p1 wins
+			if(p1Score%WINNING_KEY[i]==0) gameStatus=1;
+		} 
+		
+		//did AI win?
+		for(int i=0; i<WINNING_KEY.length; i++){
+			if(p2Score%WINNING_KEY[i]==0) gameStatus=2;
+		}
+
+		//is game drawn?
+		if(gameStatus==0){
+			if(p1Score*p2Score==MAX_SCORE){
+				gameStatus=-1;
+			}
+		}
+
+		if(gameStatus!=0) {//if game over
+			System.out.print("Game over. ");
+			if(gameStatus==1) System.out.println("Player wins!");
+			else if(gameStatus==2) System.out.println("AI wins!");
+			else System.out.println("Draw!");
+		}
+	}
+
 	public void actionPerformed(ActionEvent e){
 		// which button was pressed?
-		if(e.getSource()==reseta||e.getSource()==resetp) {
-			gameStatus = 0;
-			for(int i=0; i<9; i++){
+		if(e.getSource()==reseta||e.getSource()==resetp) { //if reset
+			gameStatus = 0; //flag game as in progress
+			for(int i=0; i<9; i++){ //reset nodes
 				board[i].status=0;
 			}
-			p1Score = p2Score = 1;
-			if(e.getSource()==resetp){
+			p1Score = p2Score = 1; //reset scores
+			if(e.getSource()==resetp){//who goes first?
 				gameMode=0; 
 				if(DEBUG) System.out.println("Reset, player first");
 			} else {
 				gameMode=1; 
-				if(DEBUG) System.out.println("Reset, AI first");
+				if(DEBUG) System.out.println("Reset, AI first"); 
+				//make AI move
 				int r;
 				do{
 					r = (int)(Math.random()*9);
 				} while(board[r].status!=0);
 				board[r].setStatus(2);
 			}
-		} else // update gameboard
+		} else // move entered
 		{
 			int n = Integer.parseInt(nodeNum.getText())-1; //read in node to update from text field
-			if((n<9)&&(n>-1)){
-				if(board[n].status==0){
+				//less one as game board visually is 1-9, game itself 0-8
+			if((n<9)&&(n>-1)){ //check if value in range
+				if(board[n].status==0){ //check if node unclaimed
 					board[n].setStatus(1);
-					atlantic.changeColor(n); //less one as game board visually is 1-9, game itself 0-8
-					for(int i=0; i<WINNING_KEY.length; i++){
-						if(p1Score%WINNING_KEY[i]==0) gameStatus=1;
-					}
+					atlantic.changeColor(n); 
+					checkOver();
 
-					if(gameStatus==0){
+					if(gameStatus==0){ //if game still active
+						//AI make rand move
 						int r;
 						do{
 							r = (int)(Math.random()*9);
 						} while(board[r].status!=0);
 						board[r].setStatus(2);
+						checkOver();
 					}
-					for(int i=0; i<WINNING_KEY.length; i++){
-						if(p1Score%WINNING_KEY[i]==0) gameStatus=-1;
-					}
-					if(gameStatus!=0) System.out.println("Game Over.");
 				} else{ //invalid input
 					if(DEBUG) System.out.println("Invalid Action: node already claimed.");
 				}
