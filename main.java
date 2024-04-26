@@ -14,7 +14,7 @@ class Dad extends WindowAdapter{
 
 
 public class main extends JFrame implements ActionListener{
-	protected final boolean DEBUG = true; //flag for debug mode, to send addl messages to the terminal
+	protected final boolean DEBUG = false; //flag for debug mode, to send addl messages to the terminal
 	protected int gameStatus = 0;
 	/* 0: game active
 	 * 1: player 1 wins
@@ -185,10 +185,10 @@ public class main extends JFrame implements ActionListener{
 			p1Score = p2Score = 1; //reset scores
 			if(e.getSource()==resetp){//who goes first?
 				gameMode=0; 
-				if(DEBUG) System.out.println("Reset, player first");
+				System.out.println("Reset, player first");
 			} else {
 				gameMode=1; 
-				if(DEBUG) System.out.println("Reset, AI first"); 
+				System.out.println("Reset, AI first"); 
 				//make AI move
 				int r;
 				do{
